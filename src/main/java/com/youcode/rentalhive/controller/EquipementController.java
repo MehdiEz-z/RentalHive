@@ -1,6 +1,6 @@
 package com.youcode.rentalhive.controller;
 
-import com.youcode.rentalhive.entity.Equipement;
+import com.youcode.rentalhive.model.entity.Materiel;
 import com.youcode.rentalhive.request.ReservationRequest;
 import com.youcode.rentalhive.service.EquipementService;
 import jakarta.validation.Valid;
@@ -25,7 +25,7 @@ public class EquipementController {
     }
 
     @PostMapping("/save")
-    public ResponseEntity<Object> createEquipement(@Valid @RequestBody Equipement equipement, BindingResult result) {
+    public ResponseEntity<Object> createEquipement(@Valid @RequestBody Materiel materiel, BindingResult result) {
         if (result.hasErrors()) {
             StringBuilder errorMessage = new StringBuilder();
             for (FieldError error : result.getFieldErrors()) {
@@ -34,34 +34,34 @@ public class EquipementController {
             return ResponseEntity.badRequest().body(errorMessage.toString());
         }
 
-        equipement.setAvailableQuantity(equipement.getInitQuantity());
-        Equipement savedEquipement =  equipementService.saveEquipement(equipement);
-        return ResponseEntity.ok(savedEquipement);
+        materiel.setAvailableQuantity(materiel.getInitQuantity());
+        Materiel savedMateriel =  equipementService.saveEquipement(materiel);
+        return ResponseEntity.ok(savedMateriel);
     }
 
     @GetMapping("/list")
-    public List<Equipement> getAllEquipment() {
+    public List<Materiel> getAllEquipment() {
         return equipementService.fetchEquipementList();
     }
 
     @GetMapping("/{equipementId}")
-    public Optional<Equipement> getEquipmentById(@PathVariable Long equipementId) {
+    public Optional<Materiel> getEquipmentById(@PathVariable Long equipementId) {
         return equipementService.getEquipementById(equipementId);
     }
 
     @GetMapping("/search/equipementAvailable")
-    public List<Equipement> getEquipementAvailable() {
+    public List<Materiel> getEquipementAvailable() {
         return equipementService.getEquipementAvailable();
     }
 
     @GetMapping("/search/equipementByName")
-    public List<Equipement> getEquipementByName(@RequestBody String equipementName) {
+    public List<Materiel> getEquipementByName(@RequestBody String equipementName) {
         return equipementService.getEquipementByName(equipementName);
     }
 
     @PutMapping("/{equipementId}")
-    public Equipement updateEquipement(@RequestBody Equipement equipement, @PathVariable Long equipementId) {
-        return equipementService.updateEquipement(equipement, equipementId);
+    public Materiel updateEquipement(@RequestBody Materiel materiel, @PathVariable Long equipementId) {
+        return equipementService.updateEquipement(materiel, equipementId);
     }
 
     @DeleteMapping("/{equipementId}")
