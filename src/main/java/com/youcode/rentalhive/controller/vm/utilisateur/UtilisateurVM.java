@@ -9,15 +9,12 @@ public record UtilisateurVM(
         String nom,
         String email,
         @JsonIgnore
-        LocalDateTime createdAt,
-        @JsonIgnore
-        LocalDateTime updatedAt
+        LocalDateTime createdAt
 ) {
     public static UtilisateurVM toVM(Utilisateur utilisateur){
         return new UtilisateurVM(
                 utilisateur.getNomUtilisateur(),
                 utilisateur.getEmail(),
-                null,
                 null);
     }
 
