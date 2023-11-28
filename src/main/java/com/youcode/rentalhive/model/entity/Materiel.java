@@ -44,7 +44,7 @@ public class Materiel {
     private TypeTransmission typeTransmission;
 
     @ManyToOne
-    private Marque marque;
+    private Type type;
 
     @JsonIgnore
     @CreatedDate
