@@ -27,6 +27,7 @@ public class Type {
     @ManyToOne
     private Marque marque;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "type")
     private List<Materiel> materielList;
 

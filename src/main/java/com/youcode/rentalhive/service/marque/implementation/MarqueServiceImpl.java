@@ -28,6 +28,11 @@ public class MarqueServiceImpl implements MarqueService {
     }
 
     @Override
+    public Optional<Marque> getMarqueByNom(String nom) {
+        return Optional.ofNullable(marqueRepository.findByNomMarqueIgnoreCase(nom));
+    }
+
+    @Override
     public List<Marque> getAllMarque() {
         return marqueRepository.findAll();
     }

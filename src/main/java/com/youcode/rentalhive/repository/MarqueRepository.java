@@ -10,5 +10,6 @@ import java.util.List;
 @Repository
 public interface MarqueRepository extends JpaRepository<Marque, Long> {
     List<Marque> findByNomMarqueStartingWithIgnoreCaseOrPaysOrigineStartingWithIgnoreCase(String nom, String pays);
+    Marque findByNomMarqueIgnoreCase(String nom);
 
 }

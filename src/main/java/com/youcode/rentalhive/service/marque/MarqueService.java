@@ -11,9 +11,9 @@ import java.util.Optional;
 public interface MarqueService {
     Marque createMarque(Marque marque);
     Optional<Marque> getMarqueById(Long id);
+    Optional<Marque> getMarqueByNom(String nom);
     List<Marque> getAllMarque();
     Marque updateMarque(Marque marque, Long id);
     List<Marque> searchMarque(String searchTerm);
-
     void deleteMarque(Long id);
 }
