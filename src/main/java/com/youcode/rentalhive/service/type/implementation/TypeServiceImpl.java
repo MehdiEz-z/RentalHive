@@ -1,5 +1,7 @@
-/* package com.youcode.rentalhive.service.type.implementation;
+package com.youcode.rentalhive.service.type.implementation;
 
+import com.youcode.rentalhive.handler.exception.OperationException;
+import com.youcode.rentalhive.handler.exception.ResourceNotFoundException;
 import com.youcode.rentalhive.model.entity.Marque;
 import com.youcode.rentalhive.model.entity.Type;
 import com.youcode.rentalhive.repository.TypeRepository;
@@ -22,17 +24,18 @@ public class TypeServiceImpl implements TypeService {
 
     @Override
     public Type createType(Type type) {
-        Optional<Marque> existingMarque = marqueService.getMarqueByNom(type.getMarque().getNomMarque());
-        if(existingMarque.isPresent()){
-            type.setMarque(existingMarque.get());
-            return typeRepository.save(type);
+        Marque existingMarque = marqueService.getMarqueByNom(type.getMarque().getNomMarque());
+        if(existingMarque == null){
+            throw new ResourceNotFoundException("La marque "+type.getMarque().getNomMarque()+" n'existe pas");
         }
-        return null;
+        type.setMarque(existingMarque);
+        return typeRepository.save(type);
     }
 
     @Override
-    public Optional<Type> getTypeById(Long id) {
-        return typeRepository.findById(id);
+    public Type getTypeById(Long id) {
+        return typeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Le Type avec l'id : " + id + " n'existe pas"));
     }
 
     @Override
@@ -45,27 +48,34 @@ public class TypeServiceImpl implements TypeService {
         Optional<Type> existingTypeOptional = typeRepository.findById(id);
         if (existingTypeOptional.isPresent()) {
             Type existingType = existingTypeOptional.get();
-            Optional<Marque> existingMarque = marqueService.getMarqueByNom(type.getMarque().getNomMarque());
-            if (existingMarque.isPresent()) {
-                existingType.setMarque(existingMarque.get());
-                existingType.setNomType(type.getNomType());
-                return typeRepository.save(existingType);
-            } else {
-                return null;
+            if(!existingType.getNomType().equals(type.getNomType()) &&
+                    typeRepository.existsByNomType(type.getNomType())){
+                throw new OperationException("Le nom du type fourni existe déjà");
             }
-        } else {
-            return null;
+            Marque existingMarque = marqueService.getMarqueByNom(type.getMarque().getNomMarque());
+            if(existingMarque == null){
+                throw new ResourceNotFoundException("La marque "+type.getMarque().getNomMarque()+" n'existe pas");
+            }
+            existingType.setMarque(existingMarque);
+            existingType.setNomType(type.getNomType());
+            return typeRepository.save(existingType);
+        }else {
+            throw new ResourceNotFoundException("Le type avec l'ID : " + id + " n'existe pas.");
         }
     }
 
     @Override
     public List<Type> searchType(String marqueName) {
-        Optional<Marque> existingMarque = marqueService.getMarqueByNom(marqueName);
-        return existingMarque.map(typeRepository::findByMarque).orElse(null);
+        return typeRepository.findByMarque_NomMarqueIgnoreCase(marqueName);
     }
 
     @Override
     public void deleteType(Long id) {
-        typeRepository.deleteById(id);
+        Optional<Type> existingTypeOptional = typeRepository.findById(id);
+        if(existingTypeOptional.isPresent()){
+            typeRepository.deleteById(id);
+        }else {
+            throw new ResourceNotFoundException("Le Type avec l'ID : " + id + " n'existe pas.");
+        }
     }
-}*/
+}

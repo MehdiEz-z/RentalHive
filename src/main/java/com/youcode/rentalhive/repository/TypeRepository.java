@@ -9,5 +9,6 @@ import java.util.List;
 
 @Repository
 public interface TypeRepository extends JpaRepository<Type, Long> {
-    List<Type> findByMarque(Marque marque);
+    List<Type> findByMarque_NomMarqueIgnoreCase(String nomMarque);
+    boolean existsByNomType(String type);
 }

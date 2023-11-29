@@ -9,7 +9,7 @@ import java.util.Optional;
 @Service
 public interface TypeService {
     Type createType(Type type);
-    Optional<Type> getTypeById(Long id);
+    Type getTypeById(Long id);
     List<Type> getAllType();
     Type updateType(Type type, Long id);
     List<Type> searchType(String searchTerm);

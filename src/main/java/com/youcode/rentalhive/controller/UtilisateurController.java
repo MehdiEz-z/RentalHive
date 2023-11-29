@@ -41,7 +41,7 @@ public class UtilisateurController {
 
     @GetMapping("/search")
     public ResponseEntity<?> searchUtilisateurs(@RequestParam String searchTerm) {
-        if (searchTerm == null || searchTerm.isEmpty()) {
+        if (searchTerm == null || searchTerm.isBlank()) {
             return ResponseMessage.badRequest("Le terme de recherche ne peut pas être vide.");
         }
         List<Utilisateur> utilisateurs = utilisateurService.searchUtilisateurs(searchTerm);

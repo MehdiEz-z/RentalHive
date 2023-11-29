@@ -40,7 +40,7 @@ public class MarqueController {
 
     @GetMapping("/search")
     public ResponseEntity<?> searchMarque(@RequestParam String searchTerm) {
-        if (searchTerm == null || searchTerm.isEmpty()) {
+        if (searchTerm == null || searchTerm.isBlank()) {
             return ResponseMessage.badRequest("Le terme de recherche ne peut pas être vide.");
         }
         List<Marque> marques = marqueService.searchMarque(searchTerm);
