@@ -22,6 +22,7 @@ public class Utilisateur {
 
     private String nomUtilisateur;
 
+    @Column(unique = true)
     private String email;
 
     @JsonIgnore
@@ -31,4 +32,5 @@ public class Utilisateur {
     @JsonIgnore
     @LastModifiedDate
     private LocalDateTime updatedAt;
+
 }

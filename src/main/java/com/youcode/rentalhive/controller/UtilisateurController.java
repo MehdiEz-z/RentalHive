@@ -1,14 +1,15 @@
 package com.youcode.rentalhive.controller;
 
 import com.youcode.rentalhive.controller.vm.utilisateur.UtilisateurVM;
+import com.youcode.rentalhive.handler.response.ResponseMessage;
 import com.youcode.rentalhive.model.entity.Utilisateur;
 import com.youcode.rentalhive.service.utilisateur.UtilisateurService;
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collector;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -20,44 +21,60 @@ public class UtilisateurController {
     }
 
     @GetMapping("{id}")
-    public UtilisateurVM getUtilisateurDetail(@PathVariable Long id){
-        return utilisateurService.getUtilisateurById(id)
-                .map(UtilisateurVM::toVM)
-                .orElse(null);
+    public ResponseEntity<?> getUtilisateurDetail(@PathVariable Long id) {
+        UtilisateurVM utilisateurVM = UtilisateurVM.toVM(utilisateurService.getUtilisateurById(id));
+        return ResponseMessage.ok(utilisateurVM, "Utilisateur Récuperé avec Succée");
     }
 
+
     @GetMapping("/")
-    public List<UtilisateurVM> getAllUtilisateurs() {
+    public ResponseEntity<?> getAllUtilisateurs() {
         List<Utilisateur> utilisateurs = utilisateurService.getAllUtilisateurs();
-        return utilisateurs.stream()
-                .map(UtilisateurVM::toVM)
-                .collect(Collectors.toList());
+        if(utilisateurs.isEmpty()){
+            return ResponseMessage.notFound("Aucun utilisateur trouvé");
+        }else{
+            return ResponseMessage.ok(utilisateurs.stream()
+                    .map(UtilisateurVM::toVM)
+                    .collect(Collectors.toList()),"Utilisateurs Récuperés avec Succée");
+        }
     }
 
     @GetMapping("/search")
-    public List<UtilisateurVM> searchUtilisateurs(@RequestParam String searchTerm) {
+    public ResponseEntity<?> searchUtilisateurs(@RequestParam String searchTerm) {
+        if (searchTerm == null || searchTerm.isEmpty()) {
+            return ResponseMessage.badRequest("Le terme de recherche ne peut pas être vide.");
+        }
         List<Utilisateur> utilisateurs = utilisateurService.searchUtilisateurs(searchTerm);
-        return utilisateurs.stream()
-                .map(UtilisateurVM::toVM)
-                .collect(Collectors.toList());
+        if(utilisateurs.isEmpty()){
+            return ResponseMessage.notFound("Aucun utilisateur trouvé pour le terme de recherche : " + searchTerm);
+        }else{
+            return ResponseMessage.ok(utilisateurs.stream()
+                    .map(UtilisateurVM::toVM)
+                    .collect(Collectors.toList()),"Utilisateurs Récuperer avec Succée");
+        }
     }
 
     @PostMapping("/")
-    public UtilisateurVM createUtilisateur(@RequestBody UtilisateurVM utilisateurVM){
+    public ResponseEntity<?> createUtilisateur(@Valid @RequestBody UtilisateurVM utilisateurVM){
         Utilisateur utilisateur = utilisateurVM.toEntite();
         Utilisateur createdUtilisateur = utilisateurService.createUtilisateur(utilisateur);
-        return UtilisateurVM.toVM(createdUtilisateur);
+        return ResponseMessage.created(
+                UtilisateurVM.toVM(createdUtilisateur),
+                "Utilisateur Crée Avec Succée");
     }
 
     @PutMapping("{id}")
-    public UtilisateurVM updateUtilisateur(@PathVariable Long id, @RequestBody UtilisateurVM utilisateurVM) {
+    public ResponseEntity<?> updateUtilisateur(@PathVariable Long id, @Valid @RequestBody UtilisateurVM utilisateurVM) {
         Utilisateur utilisateur = utilisateurVM.toEntite();
         Utilisateur updatedUtilisateur = utilisateurService.updateUtilisateur(utilisateur, id);
-        return UtilisateurVM.toVM(updatedUtilisateur);
+        return ResponseMessage.ok(
+                UtilisateurVM.toVM(updatedUtilisateur),
+                "Utilisateur Modifé Avec Succée");
     }
 
     @DeleteMapping("{id}")
-    public void deleteUtilisateur(@PathVariable Long id) {
+    public ResponseEntity<?> deleteUtilisateur(@PathVariable Long id) {
         utilisateurService.deleteUtilisateur(id);
+        return ResponseMessage.ok(null,"Utilisateur Supprimé avec Succé");
     }
 }

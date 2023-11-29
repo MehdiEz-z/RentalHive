@@ -1,6 +1,6 @@
 package com.youcode.rentalhive.handler.exception;
 
-import com.youcode.rentalhive.handler.response.ErrorResponse;
+import com.youcode.rentalhive.handler.response.ResponseMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -16,12 +16,12 @@ import java.util.Map;
 @ControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ErrorResponse> resourceNotFoundException(ResourceNotFoundException ex, WebRequest request) {
-        ErrorResponse message = new ErrorResponse(
+    public ResponseEntity<ResponseMessage> resourceNotFoundException(ResourceNotFoundException ex, WebRequest request) {
+        ResponseMessage message = new ResponseMessage(
                 HttpStatus.NOT_FOUND.value(),
                 ex.getMessage());
 
-        return new ResponseEntity<ErrorResponse>(message, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<ResponseMessage>(message, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -35,8 +35,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(OperationException.class)
-    public ResponseEntity<ErrorResponse> operationException(OperationException ex, WebRequest request) {
-        ErrorResponse message = new ErrorResponse(
+    public ResponseEntity<ResponseMessage> operationException(OperationException ex, WebRequest request) {
+        ResponseMessage message = new ResponseMessage(
                 HttpStatus.BAD_REQUEST.value(),
                 ex.getMessage());
 
@@ -44,8 +44,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> globalExceptionHandler(Exception ex, WebRequest request) {
-        ErrorResponse message = new ErrorResponse(
+    public ResponseEntity<ResponseMessage> globalExceptionHandler(Exception ex, WebRequest request) {
+        ResponseMessage message = new ResponseMessage(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 ex.getMessage());
 
