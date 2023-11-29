@@ -1,5 +1,7 @@
 package com.youcode.rentalhive.service.marque.implementation;
 
+import com.youcode.rentalhive.handler.exception.OperationException;
+import com.youcode.rentalhive.handler.exception.ResourceNotFoundException;
 import com.youcode.rentalhive.model.entity.Marque;
 import com.youcode.rentalhive.repository.MarqueRepository;
 import com.youcode.rentalhive.service.marque.MarqueService;
@@ -19,17 +21,21 @@ public class MarqueServiceImpl implements MarqueService {
 
     @Override
     public Marque createMarque(Marque marque) {
+        if(marqueRepository.existsByNomMarque(marque.getNomMarque())){
+            throw new OperationException("Le nom de la marque fourni existe déjà");
+        }
         return marqueRepository.save(marque);
     }
 
     @Override
-    public Optional<Marque> getMarqueById(Long id) {
-        return marqueRepository.findById(id);
+    public Marque getMarqueById(Long id) {
+        return marqueRepository.findById(id)
+                .orElseThrow(()-> new ResourceNotFoundException("La Marque avec l'id : " + id + " n'existe pas"));
     }
 
     @Override
-    public Optional<Marque> getMarqueByNom(String nom) {
-        return Optional.ofNullable(marqueRepository.findByNomMarqueIgnoreCase(nom));
+    public Marque getMarqueByNom(String nom) {
+        return marqueRepository.findByNomMarqueIgnoreCase(nom);
     }
 
     @Override
@@ -40,13 +46,19 @@ public class MarqueServiceImpl implements MarqueService {
     @Override
     public Marque updateMarque(Marque marque, Long id) {
         Optional<Marque> existingMarqueOptional = marqueRepository.findById(id);
+
         if (existingMarqueOptional.isPresent()) {
             Marque existingMarque = existingMarqueOptional.get();
+            if(!existingMarque.getNomMarque().equals(marque.getNomMarque()) &&
+                    marqueRepository.existsByNomMarque(marque.getNomMarque())){
+                throw new OperationException("Le nom de la marque fourni existe déjà");
+            }
             existingMarque.setNomMarque(marque.getNomMarque());
             existingMarque.setPaysOrigine(marque.getPaysOrigine());
             return marqueRepository.save(existingMarque);
+        }else {
+            throw new ResourceNotFoundException("La marque avec l'ID : " + id + " n'existe pas.");
         }
-        return null;
     }
 
     @Override
@@ -56,6 +68,11 @@ public class MarqueServiceImpl implements MarqueService {
 
     @Override
     public void deleteMarque(Long id) {
-        marqueRepository.deleteById(id);
+        Optional<Marque> existingMarqueOptional = marqueRepository.findById(id);
+        if(existingMarqueOptional.isPresent()){
+            marqueRepository.deleteById(id);
+        }else {
+            throw new ResourceNotFoundException("La marque avec l'ID : " + id + " n'existe pas.");
+        }
     }
 }

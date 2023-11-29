@@ -1,4 +1,4 @@
-package com.youcode.rentalhive.controller;
+/* package com.youcode.rentalhive.controller;
 
 import com.youcode.rentalhive.controller.vm.marque.MarqueVM;
 import com.youcode.rentalhive.controller.vm.type.TypeVM;
@@ -59,4 +59,4 @@ public class TypeController {
     public void deleteType(@PathVariable Long id) {
         typeService.deleteType(id);
     }
-}
+}*/

@@ -23,7 +23,7 @@ public class UtilisateurController {
     @GetMapping("{id}")
     public ResponseEntity<?> getUtilisateurDetail(@PathVariable Long id) {
         UtilisateurVM utilisateurVM = UtilisateurVM.toVM(utilisateurService.getUtilisateurById(id));
-        return ResponseMessage.ok(utilisateurVM, "Utilisateur Récuperé avec Succée");
+        return ResponseMessage.ok(utilisateurVM, "Utilisateur Récuperé avec Succé");
     }
 
 
@@ -35,7 +35,7 @@ public class UtilisateurController {
         }else{
             return ResponseMessage.ok(utilisateurs.stream()
                     .map(UtilisateurVM::toVM)
-                    .collect(Collectors.toList()),"Utilisateurs Récuperés avec Succée");
+                    .collect(Collectors.toList()),"Utilisateurs Récuperés avec Succé");
         }
     }
 

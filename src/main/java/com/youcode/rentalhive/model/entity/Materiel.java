@@ -25,6 +25,7 @@ public class Materiel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idMateriel;
 
+    @Column(unique = true)
     private String matricule;
 
     private String description;

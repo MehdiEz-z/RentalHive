@@ -1,8 +1,12 @@
 package com.youcode.rentalhive.controller;
 
 import com.youcode.rentalhive.controller.vm.marque.MarqueVM;
+import com.youcode.rentalhive.controller.vm.utilisateur.UtilisateurVM;
+import com.youcode.rentalhive.handler.response.ResponseMessage;
 import com.youcode.rentalhive.model.entity.Marque;
 import com.youcode.rentalhive.service.marque.MarqueService;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,44 +21,59 @@ public class MarqueController {
     }
 
     @GetMapping("{id}")
-    public MarqueVM getMarqueDetail(@PathVariable Long id){
-        return marqueService.getMarqueById(id)
-                .map(MarqueVM::toVM)
-                .orElse(null);
+    public ResponseEntity<?> getMarqueDetail(@PathVariable Long id){
+        MarqueVM marqueVM = MarqueVM.toVM(marqueService.getMarqueById(id));
+        return ResponseMessage.ok(marqueVM, "Marque Récuperée avec Succée");
     }
 
     @GetMapping("/")
-    public List<MarqueVM> getAllMarques() {
+    public ResponseEntity<?> getAllMarques() {
         List<Marque> marques = marqueService.getAllMarque();
-        return marques.stream()
-                .map(MarqueVM::toVM)
-                .collect(Collectors.toList());
+        if(marques.isEmpty()){
+            return ResponseMessage.notFound("Aucune marque trouvée");
+        }else{
+            return ResponseMessage.ok(marques.stream()
+                    .map(MarqueVM::toVM)
+                    .collect(Collectors.toList()),"Marques Récuperées avec Succée");
+        }
     }
 
     @GetMapping("/search")
-    public List<MarqueVM> searchMarque(@RequestParam String searchTerm) {
+    public ResponseEntity<?> searchMarque(@RequestParam String searchTerm) {
+        if (searchTerm == null || searchTerm.isEmpty()) {
+            return ResponseMessage.badRequest("Le terme de recherche ne peut pas être vide.");
+        }
         List<Marque> marques = marqueService.searchMarque(searchTerm);
-        return marques.stream()
-                .map(MarqueVM::toVM)
-                .collect(Collectors.toList());
+        if(marques.isEmpty()){
+            return ResponseMessage.notFound("Aucune Marque trouvée pour le terme de recherche : " + searchTerm);
+        }else{
+            return ResponseMessage.ok(marques.stream()
+                    .map(MarqueVM::toVM)
+                    .collect(Collectors.toList()),"Marques Récuperées avec Succée");
+        }
     }
 
     @PostMapping("/")
-    public MarqueVM createMarque(@RequestBody MarqueVM marqueVM){
+    public ResponseEntity<?> createMarque(@Valid @RequestBody MarqueVM marqueVM){
         Marque marque = marqueVM.toEntite();
         Marque createdMarque = marqueService.createMarque(marque);
-        return MarqueVM.toVM(createdMarque);
+        return ResponseMessage.created(
+                MarqueVM.toVM(createdMarque),
+                "Marque Crée Avec Succée");
     }
 
     @PutMapping("{id}")
-    public MarqueVM updateMarque(@PathVariable Long id, @RequestBody MarqueVM marqueVM) {
+    public ResponseEntity<?> updateMarque(@PathVariable Long id, @Valid @RequestBody MarqueVM marqueVM) {
         Marque marque = marqueVM.toEntite();
         Marque updatedMarque = marqueService.updateMarque(marque, id);
-        return MarqueVM.toVM(updatedMarque);
+        return ResponseMessage.ok(
+                MarqueVM.toVM(updatedMarque),
+                "Marque Modifée Avec Succée");
     }
 
     @DeleteMapping("{id}")
-    public void deleteMarque(@PathVariable Long id) {
-        marqueService.deleteMarque(id);
+    public ResponseEntity<?> deleteMarque(@PathVariable Long id) {
+        marqueService.getMarqueById(id);
+        return ResponseMessage.ok(null,"Marque Supprimée avec Succé");
     }
 }

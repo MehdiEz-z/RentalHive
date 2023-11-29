@@ -21,6 +21,7 @@ public class Marque {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idMarque;
 
+    @Column(unique = true)
     private String nomMarque;
 
     private String paysOrigine;

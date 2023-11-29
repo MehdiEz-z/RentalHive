@@ -25,6 +25,7 @@ public class Demande {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idDemande;
 
+    @Column(unique = true)
     private String reference;
 
     private StatutDemande statutDemande;

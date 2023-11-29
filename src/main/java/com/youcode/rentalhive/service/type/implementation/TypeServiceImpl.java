@@ -1,4 +1,4 @@
-package com.youcode.rentalhive.service.type.implementation;
+/* package com.youcode.rentalhive.service.type.implementation;
 
 import com.youcode.rentalhive.model.entity.Marque;
 import com.youcode.rentalhive.model.entity.Type;
@@ -68,4 +68,4 @@ public class TypeServiceImpl implements TypeService {
     public void deleteType(Long id) {
         typeRepository.deleteById(id);
     }
-}
+}*/

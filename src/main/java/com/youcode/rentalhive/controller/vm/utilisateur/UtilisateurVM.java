@@ -2,7 +2,6 @@ package com.youcode.rentalhive.controller.vm.utilisateur;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.youcode.rentalhive.model.entity.Utilisateur;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 

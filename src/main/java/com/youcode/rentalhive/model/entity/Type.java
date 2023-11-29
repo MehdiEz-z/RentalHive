@@ -22,6 +22,7 @@ public class Type {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idType;
 
+    @Column(unique = true)
     private String nomType;
 
     @ManyToOne
