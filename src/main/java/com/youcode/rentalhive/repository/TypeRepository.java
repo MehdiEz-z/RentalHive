@@ -10,6 +10,6 @@ import java.util.List;
 @Repository
 public interface TypeRepository extends JpaRepository<Type, Long> {
     Type findByNomType(String nomType);
-    List<Type> findByMarque_NomMarqueIgnoreCaseStartingWith(String nomMarque);
+    List<Type> findByNomTypeStartingWithIgnoreCaseOrMarque_NomMarqueStartingWithIgnoreCase(String nomType, String marqueName);
     List<Type> findByMarqueAndNomTypeIgnoreCase(Marque marque, String nomType);
 }

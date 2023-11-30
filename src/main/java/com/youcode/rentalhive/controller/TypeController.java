@@ -37,14 +37,14 @@ public class TypeController {
         }
     }
 
-    @GetMapping("/search/{marqueName}")
-    public ResponseEntity<?> searchTypeByMarque(@PathVariable String marqueName) {
-        if (marqueName == null || marqueName.isBlank()) {
+    @GetMapping("/search")
+    public ResponseEntity<?> searchTypeByMarque(@RequestParam String searchTerm) {
+        if (searchTerm == null || searchTerm.isBlank()) {
             return ResponseMessage.badRequest("Le terme de recherche ne peut pas être vide.");
         }
-        List<Type> types = typeService.searchType(marqueName);
+        List<Type> types = typeService.searchType(searchTerm);
         if(types.isEmpty()){
-            return ResponseMessage.notFound("Aucun Type trouvé pour le terme de recherche : " + marqueName);
+            return ResponseMessage.notFound("Aucun Type trouvé pour le terme de recherche : " + searchTerm);
         }else{
             return ResponseMessage.ok(types.stream()
                     .map(TypeVM::toVM)

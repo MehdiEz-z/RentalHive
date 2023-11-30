@@ -51,28 +51,32 @@ public class TypeServiceImpl implements TypeService {
     public Type updateType(Type type, Long id) {
         Optional<Type> existingTypeOptional = typeRepository.findById(id);
         if (existingTypeOptional.isPresent()) {
-            Type existingType = existingTypeOptional.get();
             Marque existingMarque = marqueService.getMarqueByNom(type.getMarque().getNomMarque());
             if (existingMarque == null) {
                 throw new ResourceNotFoundException("La marque " + type.getMarque().getNomMarque() + " n'existe pas");
             }
-            if (!existingType.getNomType().equals(type.getNomType())) {
-                if (typeRepository.findByMarqueAndNomTypeIgnoreCase(existingMarque, type.getNomType()).isEmpty()) {
-                    existingType.setNomType(type.getNomType());
-                } else {
+            Type existingType = existingTypeOptional.get();
+            String newNomType = type.getNomType();
+
+            if (existingType.getNomType().equals(newNomType)) {
+                List<Type> existingTypesWithSameName = typeRepository.findByMarqueAndNomTypeIgnoreCase(existingMarque, newNomType);
+
+                if (!existingTypesWithSameName.isEmpty()) {
                     throw new OperationException("Le nom du type fourni existe déjà pour cette marque");
                 }
+                existingType.setNomType(newNomType);
             }
             existingType.setMarque(existingMarque);
             return typeRepository.save(existingType);
-        }else {
+        } else {
             throw new ResourceNotFoundException("Le type avec l'ID : " + id + " n'existe pas.");
         }
     }
 
+
     @Override
-    public List<Type> searchType(String marqueName) {
-        return typeRepository.findByMarque_NomMarqueIgnoreCaseStartingWith(marqueName);
+    public List<Type> searchType(String searchTerm) {
+        return typeRepository.findByNomTypeStartingWithIgnoreCaseOrMarque_NomMarqueStartingWithIgnoreCase(searchTerm, searchTerm);
     }
 
     @Override
