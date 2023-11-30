@@ -36,13 +36,9 @@ public class MaterielServiceImpl implements MaterielService {
             throw new ResourceNotFoundException("La marque " + materiel.getType().getMarque().getNomMarque() + " n'existe pas");
         }
         Type existingType = typeService.getTypeByNomAndMarque(materiel.getType().getNomType(), existingMarque);
-        if (existingType == null) {
-            throw new ResourceNotFoundException("Le type " + materiel.getType().getNomType() + " n'existe pas pour la marque " + materiel.getType().getMarque().getNomMarque());
-        }
         materiel.setType(existingType);
         return materielRepository.save(materiel);
     }
-
 
     @Override
     public Materiel getMaterielById(Long id) {

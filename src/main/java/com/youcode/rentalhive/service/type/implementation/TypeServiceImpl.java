@@ -84,9 +84,15 @@ public class TypeServiceImpl implements TypeService {
         return typeRepository.findByNomType(nomType);
     }
 
+
     @Override
     public Type getTypeByNomAndMarque(String nomType, Marque marque) {
-        return (Type) typeRepository.findByMarqueAndNomTypeIgnoreCase(marque, nomType);
+        List<Type> types = typeRepository.findByMarqueAndNomTypeIgnoreCase(marque, nomType);
+        if (!types.isEmpty()) {
+            return types.get(0);
+        } else {
+            throw new ResourceNotFoundException("Le type " + nomType + " n'existe pas pour la marque " + marque.getNomMarque());
+        }
     }
 
     @Override
