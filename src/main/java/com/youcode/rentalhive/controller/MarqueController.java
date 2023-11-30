@@ -73,7 +73,7 @@ public class MarqueController {
 
     @DeleteMapping("{id}")
     public ResponseEntity<?> deleteMarque(@PathVariable Long id) {
-        marqueService.getMarqueById(id);
+        marqueService.deleteMarque(id);
         return ResponseMessage.ok(null,"Marque Supprimée avec Succé");
     }
 }

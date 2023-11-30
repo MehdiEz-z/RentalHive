@@ -13,5 +13,6 @@ public interface TypeService {
     List<Type> getAllType();
     Type updateType(Type type, Long id);
     List<Type> searchType(String searchTerm);
+    Type getTypeByNom(String nomType);
     void deleteType(Long id);
 }

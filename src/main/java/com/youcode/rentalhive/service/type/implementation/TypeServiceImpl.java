@@ -76,6 +76,11 @@ public class TypeServiceImpl implements TypeService {
     }
 
     @Override
+    public Type getTypeByNom(String nomType) {
+        return typeRepository.findByNomType(nomType);
+    }
+
+    @Override
     public void deleteType(Long id) {
         Optional<Type> existingTypeOptional = typeRepository.findById(id);
         if(existingTypeOptional.isPresent()){
