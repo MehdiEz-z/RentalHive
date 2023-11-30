@@ -44,6 +44,8 @@ public record MaterielVM(
         String marque,
         @NotBlank(message = "Le Type est Obligatoire")
         String type,
+        @Pattern(regexp = "^(EN_SERVICE|EN_MAINTENANCE|HORS_SERVICE)$", message = "L'etat du materiel doit être soit EN_SERVICE, EN_MAINTENANCE ou HORS_SERVICE")
+
         String etat,
         @JsonIgnore
         LocalDateTime createdAt
@@ -84,5 +86,26 @@ public record MaterielVM(
                           .build()
                   )
                   .build();
+    }
+
+    public Materiel toUpdateEntite(){
+        return Materiel.builder()
+                .matricule(matricul)
+                .description(description)
+                .prixLocation(prix)
+                .kilometrage(kilometrage)
+                .capaciteChargeMax(capacite)
+                .typeCarburant(TypeCarburant.valueOf(carburant))
+                .typePneu(TypePneu.valueOf(pneu))
+                .typeTransmission(TypeTransmission.valueOf(transmission))
+                .etatMateriel(EtatMateriel.valueOf(etat))
+                .type(Type.builder()
+                        .nomType(type)
+                        .marque(Marque.builder()
+                                .nomMarque(marque)
+                                .build())
+                        .build()
+                )
+                .build();
     }
 }

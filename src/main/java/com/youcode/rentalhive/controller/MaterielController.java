@@ -64,7 +64,7 @@ public class MaterielController {
 
     @PutMapping("{id}")
     public ResponseEntity<?> updateMateriel(@PathVariable Long id,@Valid @RequestBody MaterielVM materielVM) {
-        Materiel materiel = materielVM.toEntite();
+        Materiel materiel = materielVM.toUpdateEntite();
         Materiel updateMateriel = materielService.updateMateriel(materiel, id);
         return ResponseMessage.ok(
                 MaterielVM.toVM(updateMateriel),
