@@ -2,9 +2,11 @@ package com.youcode.rentalhive.service.materiel.implementation;
 
 import com.youcode.rentalhive.handler.exception.OperationException;
 import com.youcode.rentalhive.handler.exception.ResourceNotFoundException;
+import com.youcode.rentalhive.model.entity.Marque;
 import com.youcode.rentalhive.model.entity.Materiel;
 import com.youcode.rentalhive.model.entity.Type;
 import com.youcode.rentalhive.repository.MaterielRepository;
+import com.youcode.rentalhive.service.marque.MarqueService;
 import com.youcode.rentalhive.service.materiel.MaterielService;
 import com.youcode.rentalhive.service.type.TypeService;
 import org.springframework.stereotype.Component;
@@ -16,10 +18,12 @@ import java.util.Optional;
 public class MaterielServiceImpl implements MaterielService {
     private final MaterielRepository materielRepository;
     private final TypeService typeService;
+    private final MarqueService marqueService;
 
-    public MaterielServiceImpl(MaterielRepository materielRepository, TypeService typeService) {
+    public MaterielServiceImpl(MaterielRepository materielRepository, TypeService typeService, MarqueService marqueService) {
         this.materielRepository = materielRepository;
         this.typeService = typeService;
+        this.marqueService = marqueService;
     }
 
     @Override
@@ -27,9 +31,13 @@ public class MaterielServiceImpl implements MaterielService {
         if (materielRepository.existsByMatricule(materiel.getMatricule())) {
             throw new OperationException("Le matricule fourni existe déjà");
         }
-        Type existingType = typeService.getTypeByNom(materiel.getType().getNomType());
+        Marque existingMarque = marqueService.getMarqueByNom(materiel.getType().getMarque().getNomMarque());
+        if (existingMarque == null) {
+            throw new ResourceNotFoundException("La marque " + materiel.getType().getMarque().getNomMarque() + " n'existe pas");
+        }
+        Type existingType = typeService.getTypeByNomAndMarque(materiel.getType().getNomType(), existingMarque);
         if (existingType == null) {
-            throw new ResourceNotFoundException("Le type " + materiel.getType().getNomType() + " n'existe pas");
+            throw new ResourceNotFoundException("Le type " + materiel.getType().getNomType() + " n'existe pas pour la marque " + materiel.getType().getMarque().getNomMarque());
         }
         materiel.setType(existingType);
         return materielRepository.save(materiel);
@@ -56,13 +64,17 @@ public class MaterielServiceImpl implements MaterielService {
                     materielRepository.existsByMatricule(materiel.getMatricule())) {
                 throw new OperationException("Le matricule fourni existe déjà");
             }
-            Type existingType = typeService.getTypeByNom(materiel.getType().getNomType());
+            Marque existingMarque = marqueService.getMarqueByNom(materiel.getType().getMarque().getNomMarque());
+            if (existingMarque == null) {
+                throw new ResourceNotFoundException("La marque " + materiel.getType().getMarque().getNomMarque() + " n'existe pas");
+            }
+            Type existingType = typeService.getTypeByNomAndMarque(materiel.getType().getNomType(), existingMateriel.getType().getMarque());
             if (existingType == null) {
                 throw new ResourceNotFoundException("Le type " + materiel.getType().getNomType() + " n'existe pas");
             }
             materiel.setType(existingType);
             return materielRepository.save(existingMateriel);
-        }else {
+        } else {
             throw new ResourceNotFoundException("Le materiel avec l'ID : " + id + " n'existe pas.");
         }
     }

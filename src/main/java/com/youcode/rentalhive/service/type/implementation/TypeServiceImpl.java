@@ -81,6 +81,11 @@ public class TypeServiceImpl implements TypeService {
     }
 
     @Override
+    public Type getTypeByNomAndMarque(String nomType, Marque marque) {
+        return (Type) typeRepository.findByMarqueAndNomTypeIgnoreCase(marque, nomType);
+    }
+
+    @Override
     public void deleteType(Long id) {
         Optional<Type> existingTypeOptional = typeRepository.findById(id);
         if(existingTypeOptional.isPresent()){

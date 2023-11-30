@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/utilisateur")
 public class UtilisateurController {
-    UtilisateurService utilisateurService;
+    private final UtilisateurService utilisateurService;
     public UtilisateurController(UtilisateurService utilisateurService) {
         this.utilisateurService = utilisateurService;
     }

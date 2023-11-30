@@ -1,9 +1,7 @@
 package com.youcode.rentalhive.controller;
 
-import com.youcode.rentalhive.controller.vm.marque.MarqueVM;
 import com.youcode.rentalhive.controller.vm.type.TypeVM;
 import com.youcode.rentalhive.handler.response.ResponseMessage;
-import com.youcode.rentalhive.model.entity.Marque;
 import com.youcode.rentalhive.model.entity.Type;
 import com.youcode.rentalhive.service.type.TypeService;
 import jakarta.validation.Valid;
@@ -16,7 +14,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/type")
 public class TypeController {
-    TypeService typeService;
+    private final TypeService typeService;
     public TypeController(TypeService typeService) {
         this.typeService = typeService;
     }

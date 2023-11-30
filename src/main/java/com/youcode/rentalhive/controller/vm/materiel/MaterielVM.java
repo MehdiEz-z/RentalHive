@@ -38,10 +38,10 @@ public record MaterielVM(
         @NotBlank(message = "La Transmission est Obligatoire")
         @Pattern(regexp = "^(MANUELLE|AUTOMATIQUE)$", message = "Le type du carburant doit être soit MANUELLE ou AUTOMATIQUE")
         String transmission,
+        @NotBlank(message = "La Marque est Obligatoire")
+        String marque,
         @NotBlank(message = "Le Type est Obligatoire")
         String type,
-        @JsonIgnore
-        String marque,
         @JsonIgnore
         LocalDateTime createdAt
 ) {
@@ -55,8 +55,8 @@ public record MaterielVM(
                 materiel.getTypeCarburant().name(),
                 materiel.getTypePneu().name(),
                 materiel.getTypeTransmission().name(),
-                materiel.getType().getNomType(),
                 materiel.getType().getMarque().getNomMarque(),
+                materiel.getType().getNomType(),
                 null
         );
     }

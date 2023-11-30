@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/marque")
 public class MarqueController {
-    MarqueService marqueService;
+    private final MarqueService marqueService;
     public MarqueController(MarqueService marqueService) {
         this.marqueService = marqueService;
     }
