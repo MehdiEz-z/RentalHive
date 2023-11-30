@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 public record MarqueVM(
         @NotBlank(message = "Le Nom est Obligatoire")
-        String nom,
+        String marque,
         @NotBlank(message = "Le Pays est Obligatoire")
         String pays,
         @JsonIgnore
@@ -23,7 +23,7 @@ public record MarqueVM(
 
     public Marque toEntite(){
         return Marque.builder()
-                .nomMarque(this.nom)
+                .nomMarque(this.marque)
                 .paysOrigine(this.pays)
                 .createdAt(LocalDateTime.now())
                 .build();

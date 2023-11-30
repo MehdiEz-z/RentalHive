@@ -28,6 +28,10 @@ public class TypeServiceImpl implements TypeService {
         if(existingMarque == null){
             throw new ResourceNotFoundException("La marque "+type.getMarque().getNomMarque()+" n'existe pas");
         }
+        List<Type> existingTypes = typeRepository.findByMarqueAndNomTypeIgnoreCase(existingMarque, type.getNomType());
+        if (!existingTypes.isEmpty()) {
+            throw new OperationException("La marque " + existingMarque.getNomMarque() + " a déjà un type avec le nom " + type.getNomType());
+        }
         type.setMarque(existingMarque);
         return typeRepository.save(type);
     }
@@ -48,16 +52,18 @@ public class TypeServiceImpl implements TypeService {
         Optional<Type> existingTypeOptional = typeRepository.findById(id);
         if (existingTypeOptional.isPresent()) {
             Type existingType = existingTypeOptional.get();
-            if(!existingType.getNomType().equals(type.getNomType()) &&
-                    typeRepository.existsByNomType(type.getNomType())){
-                throw new OperationException("Le nom du type fourni existe déjà");
-            }
             Marque existingMarque = marqueService.getMarqueByNom(type.getMarque().getNomMarque());
-            if(existingMarque == null){
-                throw new ResourceNotFoundException("La marque "+type.getMarque().getNomMarque()+" n'existe pas");
+            if (existingMarque == null) {
+                throw new ResourceNotFoundException("La marque " + type.getMarque().getNomMarque() + " n'existe pas");
+            }
+            if (!existingType.getNomType().equals(type.getNomType())) {
+                if (typeRepository.findByMarqueAndNomTypeIgnoreCase(existingMarque, type.getNomType()).isEmpty()) {
+                    existingType.setNomType(type.getNomType());
+                } else {
+                    throw new OperationException("Le nom du type fourni existe déjà pour cette marque");
+                }
             }
             existingType.setMarque(existingMarque);
-            existingType.setNomType(type.getNomType());
             return typeRepository.save(existingType);
         }else {
             throw new ResourceNotFoundException("Le type avec l'ID : " + id + " n'existe pas.");
@@ -66,7 +72,7 @@ public class TypeServiceImpl implements TypeService {
 
     @Override
     public List<Type> searchType(String marqueName) {
-        return typeRepository.findByMarque_NomMarqueIgnoreCase(marqueName);
+        return typeRepository.findByMarque_NomMarqueIgnoreCaseStartingWith(marqueName);
     }
 
     @Override

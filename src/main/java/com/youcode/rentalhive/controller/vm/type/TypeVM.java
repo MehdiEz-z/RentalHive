@@ -10,9 +10,9 @@ import java.time.LocalDateTime;
 
 public record TypeVM(
     @NotBlank(message = "Le Nom est Obligatoire")
-    String nom,
+    String type,
     @NotBlank(message = "La Marque est Obligatoire")
-    String marqueNom,
+    String marque,
     @JsonIgnore
     LocalDateTime createdAt
 ) {
@@ -25,9 +25,9 @@ public record TypeVM(
 
     public Type toEntite(){
         return Type.builder()
-                .nomType(this.nom)
+                .nomType(this.type)
                 .marque(Marque.builder()
-                        .nomMarque(marqueNom)
+                        .nomMarque(marque)
                         .build()
                 )
                 .createdAt(LocalDateTime.now())

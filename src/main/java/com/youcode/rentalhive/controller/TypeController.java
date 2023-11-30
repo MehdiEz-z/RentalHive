@@ -2,9 +2,12 @@ package com.youcode.rentalhive.controller;
 
 import com.youcode.rentalhive.controller.vm.marque.MarqueVM;
 import com.youcode.rentalhive.controller.vm.type.TypeVM;
+import com.youcode.rentalhive.handler.response.ResponseMessage;
 import com.youcode.rentalhive.model.entity.Marque;
 import com.youcode.rentalhive.model.entity.Type;
 import com.youcode.rentalhive.service.type.TypeService;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,44 +22,59 @@ public class TypeController {
     }
 
     @GetMapping("{id}")
-    public TypeVM getTypeDetail(@PathVariable Long id){
-        return typeService.getTypeById(id)
-                .map(TypeVM::toVM)
-                .orElse(null);
+    public ResponseEntity<?> getTypeDetail(@PathVariable Long id){
+        TypeVM typeVM = TypeVM.toVM(typeService.getTypeById(id));
+        return ResponseMessage.ok(typeVM, "Type Récuperé avec Succée");
     }
 
     @GetMapping("/")
-    public List<TypeVM> getAllTypes() {
+    public ResponseEntity<?> getAllTypes() {
         List<Type> types = typeService.getAllType();
-        return types.stream()
-                .map(TypeVM::toVM)
-                .collect(Collectors.toList());
+        if(types.isEmpty()){
+            return ResponseMessage.notFound("Aucun type trouvé");
+        }else{
+            return ResponseMessage.ok(types.stream()
+                    .map(TypeVM::toVM)
+                    .collect(Collectors.toList()),"Types Récuperés avec Succée");
+        }
     }
 
     @GetMapping("/search/{marqueName}")
-    public List<TypeVM> searchTypeByMarque(@PathVariable String marqueName) {
+    public ResponseEntity<?> searchTypeByMarque(@PathVariable String marqueName) {
+        if (marqueName == null || marqueName.isBlank()) {
+            return ResponseMessage.badRequest("Le terme de recherche ne peut pas être vide.");
+        }
         List<Type> types = typeService.searchType(marqueName);
-        return types.stream()
-                .map(TypeVM::toVM)
-                .collect(Collectors.toList());
+        if(types.isEmpty()){
+            return ResponseMessage.notFound("Aucun Type trouvé pour le terme de recherche : " + marqueName);
+        }else{
+            return ResponseMessage.ok(types.stream()
+                    .map(TypeVM::toVM)
+                    .collect(Collectors.toList()),"Types Récuperés avec Succée");
+        }
     }
 
     @PostMapping("/")
-    public TypeVM createType(@RequestBody TypeVM typeVM){
+    public ResponseEntity<?> createType(@Valid @RequestBody TypeVM typeVM){
         Type type = typeVM.toEntite();
         Type createdType = typeService.createType(type);
-        return TypeVM.toVM(createdType);
+        return ResponseMessage.created(
+                TypeVM.toVM(createdType),
+                "Type Crée Avec Succée");
     }
 
     @PutMapping("{id}")
-    public TypeVM updateType(@PathVariable Long id, @RequestBody TypeVM typeVM) {
+    public ResponseEntity<?> updateType(@PathVariable Long id,@Valid @RequestBody TypeVM typeVM) {
         Type type = typeVM.toEntite();
         Type updatedType = typeService.updateType(type, id);
-        return TypeVM.toVM(updatedType);
+        return ResponseMessage.ok(
+                TypeVM.toVM(updatedType),
+                "Type Modifié Avec Succée");
     }
 
     @DeleteMapping("{id}")
-    public void deleteType(@PathVariable Long id) {
+    public ResponseEntity<?> deleteType(@PathVariable Long id) {
         typeService.deleteType(id);
+        return ResponseMessage.ok(null,"Type Supprimé avec Succé");
     }
 }
