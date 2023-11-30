@@ -1,7 +1,6 @@
 package com.youcode.rentalhive.controller.vm.type;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.youcode.rentalhive.controller.vm.marque.MarqueVM;
 import com.youcode.rentalhive.model.entity.Marque;
 import com.youcode.rentalhive.model.entity.Type;
 import jakarta.validation.constraints.NotBlank;
