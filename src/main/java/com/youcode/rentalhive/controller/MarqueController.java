@@ -1,7 +1,6 @@
 package com.youcode.rentalhive.controller;
 
 import com.youcode.rentalhive.controller.vm.marque.MarqueVM;
-import com.youcode.rentalhive.controller.vm.utilisateur.UtilisateurVM;
 import com.youcode.rentalhive.handler.response.ResponseMessage;
 import com.youcode.rentalhive.model.entity.Marque;
 import com.youcode.rentalhive.service.marque.MarqueService;
