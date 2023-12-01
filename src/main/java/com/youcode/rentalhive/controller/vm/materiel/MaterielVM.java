@@ -4,10 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.youcode.rentalhive.model.entity.Marque;
 import com.youcode.rentalhive.model.entity.Materiel;
 import com.youcode.rentalhive.model.entity.Type;
-import com.youcode.rentalhive.model.enums.materiel.EtatMateriel;
-import com.youcode.rentalhive.model.enums.materiel.TypeCarburant;
-import com.youcode.rentalhive.model.enums.materiel.TypePneu;
-import com.youcode.rentalhive.model.enums.materiel.TypeTransmission;
+import com.youcode.rentalhive.model.enums.materiel.*;
 import jakarta.validation.constraints.*;
 
 import java.time.LocalDateTime;
@@ -45,8 +42,8 @@ public record MaterielVM(
         @NotBlank(message = "Le Type est Obligatoire")
         String type,
         @Pattern(regexp = "^(EN_SERVICE|EN_MAINTENANCE|HORS_SERVICE)$", message = "L'etat du materiel doit être soit EN_SERVICE, EN_MAINTENANCE ou HORS_SERVICE")
-
         String etat,
+        String disponibilite,
         @JsonIgnore
         LocalDateTime createdAt
 ) {
@@ -63,6 +60,7 @@ public record MaterielVM(
                 materiel.getType().getMarque().getNomMarque(),
                 materiel.getType().getNomType(),
                 materiel.getEtatMateriel().name(),
+                materiel.getStatutDisponibilite().name(),
                 null
         );
     }
@@ -78,6 +76,7 @@ public record MaterielVM(
                   .typePneu(TypePneu.valueOf(pneu))
                   .typeTransmission(TypeTransmission.valueOf(transmission))
                   .etatMateriel(EtatMateriel.EN_SERVICE)
+                  .statutDisponibilite(StatutDisponibilite.DISPONIBLE)
                   .type(Type.builder()
                           .nomType(type)
                           .marque(Marque.builder()

@@ -5,6 +5,8 @@ import com.youcode.rentalhive.handler.exception.ResourceNotFoundException;
 import com.youcode.rentalhive.model.entity.Marque;
 import com.youcode.rentalhive.model.entity.Materiel;
 import com.youcode.rentalhive.model.entity.Type;
+import com.youcode.rentalhive.model.enums.materiel.EtatMateriel;
+import com.youcode.rentalhive.model.enums.materiel.StatutDisponibilite;
 import com.youcode.rentalhive.repository.MaterielRepository;
 import com.youcode.rentalhive.service.marque.MarqueService;
 import com.youcode.rentalhive.service.materiel.MaterielService;
@@ -65,6 +67,12 @@ public class MaterielServiceImpl implements MaterielService {
                 throw new ResourceNotFoundException("La marque " + materiel.getType().getMarque().getNomMarque() + " n'existe pas");
             }
             Type existingType = typeService.getTypeByNomAndMarque(materiel.getType().getNomType(), existingMarque);
+
+            if (materiel.getEtatMateriel() == EtatMateriel.EN_SERVICE) {
+                existingMateriel.setStatutDisponibilite(StatutDisponibilite.DISPONIBLE);
+            } else if (materiel.getEtatMateriel() == EtatMateriel.HORS_SERVICE || materiel.getEtatMateriel() == EtatMateriel.EN_MAINTENANCE) {
+                existingMateriel.setStatutDisponibilite(StatutDisponibilite.NON_DISPONIBLE);
+            }
 
             existingMateriel.setMatricule(materiel.getMatricule());
             existingMateriel.setDescription(materiel.getDescription());

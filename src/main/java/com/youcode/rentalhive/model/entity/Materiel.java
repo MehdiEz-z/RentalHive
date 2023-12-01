@@ -1,10 +1,7 @@
 package com.youcode.rentalhive.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.youcode.rentalhive.model.enums.materiel.EtatMateriel;
-import com.youcode.rentalhive.model.enums.materiel.TypeCarburant;
-import com.youcode.rentalhive.model.enums.materiel.TypePneu;
-import com.youcode.rentalhive.model.enums.materiel.TypeTransmission;
+import com.youcode.rentalhive.model.enums.materiel.*;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -43,6 +40,8 @@ public class Materiel {
     private TypePneu typePneu;
 
     private TypeTransmission typeTransmission;
+
+    private StatutDisponibilite statutDisponibilite;
 
     @ManyToOne
     private Type type;

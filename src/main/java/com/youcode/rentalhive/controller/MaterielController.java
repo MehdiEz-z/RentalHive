@@ -30,7 +30,7 @@ public class MaterielController {
     public ResponseEntity<?> getAllMateriel() {
         List<Materiel> materiels = materielService.getAllMateriel();
         if(materiels.isEmpty()){
-            return ResponseMessage.notFound("Aucun materiel trouvé");
+            return ResponseMessage.notFound("Aucun materiel disponible actuellement");
         }else{
             return ResponseMessage.ok(materiels.stream()
                     .map(MaterielVM::toVM)
