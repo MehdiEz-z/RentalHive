@@ -1,6 +1,7 @@
 package com.youcode.rentalhive.controller;
 
-import com.youcode.rentalhive.controller.vm.materiel.MaterielVM;
+import com.youcode.rentalhive.controller.vm.materiel.request.MaterielRequestVM;
+import com.youcode.rentalhive.controller.vm.materiel.response.MaterielResponseVM;
 import com.youcode.rentalhive.handler.response.ResponseMessage;
 import com.youcode.rentalhive.model.entity.Materiel;
 import com.youcode.rentalhive.service.materiel.MaterielService;
@@ -22,8 +23,16 @@ public class MaterielController {
 
     @GetMapping("{id}")
     public ResponseEntity<?> getMaterielDetail(@PathVariable Long id){
-        MaterielVM materielVM = MaterielVM.toVM(materielService.getMaterielById(id));
-        return ResponseMessage.ok(materielVM, "Materiel Récuperé avec Succée");
+        MaterielResponseVM materielResponseVM = MaterielResponseVM.toVM(materielService.getMaterielById(id));
+        return ResponseMessage.ok(materielResponseVM, "Materiel Récuperé avec Succée");
+    }
+
+    @GetMapping("/byTypeAndMark")
+    public ResponseEntity<?> getMaterielByTypeAndMark(
+            @RequestParam String type,
+            @RequestParam String mark) {
+            MaterielResponseVM materielResponseVM = MaterielResponseVM.toVM(materielService.getMaterielByDisponibilite(type,mark));
+        return ResponseMessage.ok(materielResponseVM,"Materiel Récuperé avec Succée");
     }
 
     @GetMapping("/")
@@ -33,7 +42,7 @@ public class MaterielController {
             return ResponseMessage.notFound("Aucun materiel disponible actuellement");
         }else{
             return ResponseMessage.ok(materiels.stream()
-                    .map(MaterielVM::toVM)
+                    .map(MaterielResponseVM::toVM)
                     .collect(Collectors.toList()),"Materiels Récuperés avec Succée");
         }
     }
@@ -48,26 +57,26 @@ public class MaterielController {
             return ResponseMessage.notFound("Aucun materiel trouvé pour le terme de recherche : " + searchTerm);
         }else{
             return ResponseMessage.ok(materiels.stream()
-                    .map(MaterielVM::toVM)
+                    .map(MaterielResponseVM::toVM)
                     .collect(Collectors.toList()),"Materiels Récuperés avec Succée");
         }
     }
 
     @PostMapping("/")
-    public ResponseEntity<?> createMateriel(@Valid @RequestBody MaterielVM materielVM){
-        Materiel materiel = materielVM.toEntite();
+    public ResponseEntity<?> createMateriel(@Valid @RequestBody MaterielRequestVM materielRequestVM){
+        Materiel materiel = materielRequestVM.toEntite();
         Materiel createdMateriel = materielService.createMateriel(materiel);
         return ResponseMessage.created(
-                MaterielVM.toVM(createdMateriel),
+                MaterielResponseVM.toVM(createdMateriel),
                 "Materiel Crée Avec Succée");
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<?> updateMateriel(@PathVariable Long id,@Valid @RequestBody MaterielVM materielVM) {
-        Materiel materiel = materielVM.toUpdateEntite();
+    public ResponseEntity<?> updateMateriel(@PathVariable Long id,@Valid @RequestBody MaterielRequestVM materielRequestVM) {
+        Materiel materiel = materielRequestVM.toUpdateEntite();
         Materiel updateMateriel = materielService.updateMateriel(materiel, id);
         return ResponseMessage.ok(
-                MaterielVM.toVM(updateMateriel),
+                MaterielResponseVM.toVM(updateMateriel),
                 "Materiel Modifié Avec Succée");
     }
 

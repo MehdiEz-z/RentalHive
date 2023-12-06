@@ -33,8 +33,8 @@ public class Demande {
     @OneToMany(mappedBy = "demande")
     private List<MaterielDemande> materielDemandeList;
 
-    @ManyToOne
-    private Utilisateur utilisateur;
+    //@ManyToOne
+    //private Utilisateur utilisateur;
 
     @JsonIgnore
     @CreatedDate

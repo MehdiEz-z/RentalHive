@@ -11,15 +11,12 @@ public record TypeVM(
     @NotBlank(message = "Le Nom est Obligatoire")
     String type,
     @NotBlank(message = "La Marque est Obligatoire")
-    String marque,
-    @JsonIgnore
-    LocalDateTime createdAt
+    String marque
 ) {
     public static TypeVM toVM(Type type ){
         return new TypeVM(
                 type.getNomType(),
-                type.getMarque().getNomMarque(),
-                null);
+                type.getMarque().getNomMarque());
     }
 
     public Type toEntite(){
@@ -29,7 +26,6 @@ public record TypeVM(
                         .nomMarque(marque)
                         .build()
                 )
-                .createdAt(LocalDateTime.now())
                 .build();
     }
 }

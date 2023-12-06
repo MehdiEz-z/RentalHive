@@ -49,6 +49,11 @@ public class MaterielServiceImpl implements MaterielService {
     }
 
     @Override
+    public Materiel getMaterielByMatricule(String matricule) {
+        return materielRepository.findByMatricule(matricule);
+    }
+
+    @Override
     public List<Materiel> getAllMateriel() {
         return materielRepository.findAll();
     }
@@ -98,6 +103,17 @@ public class MaterielServiceImpl implements MaterielService {
     }
 
     @Override
+    public Materiel getMaterielByDisponibilite(String type, String marque) {
+        return materielRepository.findByType_NomTypeIgnoreCaseAndType_Marque_NomMarqueIgnoreCase(type, marque)
+                .stream()
+                .filter(materiel -> materiel.getStatutDisponibilite() == StatutDisponibilite.DISPONIBLE)
+                .findFirst()
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Aucun matériel disponible trouvé pour le type '" + type + "' et la marque '" + marque + "'")
+                );
+    }
+
+    @Override
     public void deleteMateriel(Long id) {
         Optional<Materiel> existingMaterielOptional = materielRepository.findById(id);
         if(existingMaterielOptional.isPresent()){
@@ -105,5 +121,10 @@ public class MaterielServiceImpl implements MaterielService {
         }else {
             throw new ResourceNotFoundException("Le Materiel avec l'ID : " + id + " n'existe pas.");
         }
+    }
+
+    @Override
+    public void updateByStatutDisponibilite(StatutDisponibilite statutDisponibilite, Long id) {
+        materielRepository.updateByStatutDisponibilite(statutDisponibilite, id);
     }
 }

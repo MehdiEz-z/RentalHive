@@ -12,22 +12,18 @@ public record UtilisateurVM(
         String nom,
         @NotBlank(message = "L'email est Obligatoire")
         @Pattern(regexp = "^[A-Za-z0-9._-]+@(gmail|outlook|hotmail)\\.(com|net|fr)$", message = "Email Invalid")
-        String email,
-        @JsonIgnore
-        LocalDateTime createdAt
+        String email
 ) {
     public static UtilisateurVM toVM(Utilisateur utilisateur){
         return new UtilisateurVM(
                 utilisateur.getNomUtilisateur(),
-                utilisateur.getEmail(),
-                null);
+                utilisateur.getEmail());
     }
 
     public Utilisateur toEntite(){
         return Utilisateur.builder()
                 .nomUtilisateur(this.nom)
                 .email(this.email)
-                .createdAt(LocalDateTime.now())
                 .build();
     }
 }

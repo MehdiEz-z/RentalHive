@@ -10,22 +10,18 @@ public record MarqueVM(
         @NotBlank(message = "Le Nom est Obligatoire")
         String marque,
         @NotBlank(message = "Le Pays est Obligatoire")
-        String pays,
-        @JsonIgnore
-        LocalDateTime createdAt
+        String pays
 ) {
     public static MarqueVM toVM(Marque marque){
         return new MarqueVM(
                 marque.getNomMarque(),
-                marque.getPaysOrigine(),
-                null);
+                marque.getPaysOrigine());
     }
 
     public Marque toEntite(){
         return Marque.builder()
                 .nomMarque(this.marque)
                 .paysOrigine(this.pays)
-                .createdAt(LocalDateTime.now())
                 .build();
     }
 }
